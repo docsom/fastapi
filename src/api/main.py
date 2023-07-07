@@ -21,24 +21,24 @@ class Item(BaseModel):
 
 @app.get("/")
 async def read_root():
-    return {"Hello": "World"}
+    return {"mesaage": "Hello, World!"}
 
 
 # CRUD 엔드포인트 정의
-@app.post("/items/")
+@app.post("/items/", response_model=Item)
 async def create_item(item: Item):
     item_data = item.dict()
     await collection.insert_one(item_data)
     return item
 
 
-@app.get("/items/")
+@app.get("/items/", response_model=list[Item])
 async def read_items():
     items = await collection.find().to_list(length=None)
     return items
 
 
-@app.get("/items/{item_id}")
+@app.get("/items/{item_id}", response_model=Item)
 async def read_item(item_id: str):
     item = await collection.find_one({"id": item_id})
     if item is None:
@@ -46,7 +46,7 @@ async def read_item(item_id: str):
     return item
 
 
-@app.put("/items/{item_id}")
+@app.put("/items/{item_id}", response_model=Item)
 async def update_item(item_id: str, item: Item):
     item_data = item.dict()
     result = await collection.update_one({"id": item_id}, {"$set": item_data})
