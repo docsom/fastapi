@@ -26,6 +26,7 @@ def create_item(item: Item):
     collection.insert_one(item_data)
     return item
 
+
 @app.get("/items/")
 def read_items():
     items = list(collection.find())
