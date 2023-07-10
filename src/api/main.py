@@ -1,6 +1,6 @@
 from bson.objectid import ObjectId
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, json
+from pydantic import BaseModel, Field, json
 from motor.motor_asyncio import AsyncIOMotorClient
 
 json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -16,7 +16,9 @@ collection = db["items"]
 class Item(BaseModel):
     id: str
     name: str
-    description: str
+    description: str | None = Field(
+        default=None, title="The description of the item", max_length=300
+    )
 
 
 @app.get("/")
